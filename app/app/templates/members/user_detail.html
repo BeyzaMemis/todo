@@ -1,0 +1,27 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+ <div class="container"style="padding-left: 0px;">
+ <br/>
+  <div class="card border-success mb-3" style="max-width: 18rem;">
+   <div class="card-header bg-transparent border-success">{{user}}</div>
+   <div class="card-body text-success">
+    <h5 class="card-title">User Details</h5>
+    <p class="card-text">
+   User Name = {{user.username}}<br/>
+   User Mail = {{user.email}}<br/>
+   Is Staff = {{user.is_staff}}<br/>
+   Current Project = {{user.current_project}}<br/>
+   Active Work Project Count = {{user.active_work_project_count}}<br/>
+   Total Worked Project = {{user.total_worked_project}}<br/>
+
+
+    </p>
+   </div>
+   <div class="card-footer bg-transparent border-success">Footer</div>
+  </div>
+ </div>
+
+
+
+
+ {% endblock %}

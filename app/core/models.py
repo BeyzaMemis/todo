@@ -33,6 +33,8 @@ class UserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self.db)
 
+        return user
+
 
 # Create your models here.
 class User(AbstractUser, PermissionsMixin):
