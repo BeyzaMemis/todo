@@ -16,13 +16,15 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            print("homee")
+
             login(request, user)
             return redirect('home')
         else:
-            print("loginn")
-            return redirect('http://127.0.0.1:8000/Home/')
+
+            return redirect('login_user')
     else:
         return render(request, 'members/login.html', {})
 
-# Create your views here.
+
+def people(request):
+    return render(request, 'members/people.html', {})
