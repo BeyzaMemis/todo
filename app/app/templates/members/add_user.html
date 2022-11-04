@@ -1,0 +1,13 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+  <h1> add User</h1>
+  <br/>
+  <br/>
+  <form action="" method="POST">
+   {% csrf_token %}
+
+   {{ form.as_p }}
+   <input type="submit" value="Add" class="btn btn-outline-success">
+  </form>
+
+{% endblock %}
