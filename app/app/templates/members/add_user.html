@@ -3,11 +3,17 @@
   <h1> add User</h1>
   <br/>
   <br/>
-  <form action="" method="POST">
-   {% csrf_token %}
+  {% if submitted %}
+     The User submitted successfully !!
 
-   {{ form.as_p }}
-   <input type="submit" value="Add" class="btn btn-outline-success">
-  </form>
+  {% else %}
+   <form action="" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        <input type="submit" value="Add" class="btn btn-outline-success">
+   </form>
+  {% endif %}
+
 
 {% endblock %}

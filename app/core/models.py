@@ -7,7 +7,6 @@ from django.contrib.auth.models import (
 
 
 class Project(models.Model):
-    id = models.IntegerField(primary_key=True,)
     name = models.CharField(max_length=257, unique=True, null=False)
     description = models.TextField()
     active_issue_count = models.IntegerField(default=0)  # functiona bağlanmalı
@@ -15,6 +14,20 @@ class Project(models.Model):
     is_active = models.BooleanField()
     start_date = models.DateTimeField()
     deadline = models.DateTimeField()
+
+
+class Projects(models.Model):
+    name = models.CharField(max_length=257, unique=True, null=False)
+    description = models.TextField()
+    active_issue_count = models.IntegerField(default=0)  # functiona bağlanmalı
+    solved_issue_count = models.IntegerField(default=0)  # functiona bağlanmalı
+    is_active = models.BooleanField()
+    start_date = models.DateTimeField()
+    deadline = models.DateTimeField()
+
+
+class Beyzo(models.Model):
+    deneme = models.CharField(max_length=40)
 
 
 class UserManager(BaseUserManager):
@@ -42,8 +55,7 @@ class User(AbstractUser, PermissionsMixin):
     related_group = models.CharField
     current_project = models.ForeignKey(to='core.Project', related_name='current_project', on_delete=models.PROTECT,
                                         null=True)
-    total_worked_project = models.IntegerField(default=0)# functiona bağla
-    active_work_project_count = models.IntegerField(default=0) #functiona bağla
-
+    total_worked_project = models.IntegerField(default=0)  # functiona bağla
+    active_work_project_count = models.IntegerField(default=0)  # functiona bağla
 
     REQUIRED_FIELDS = ['email']

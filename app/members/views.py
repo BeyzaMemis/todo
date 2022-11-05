@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from core.models import User
+from core.models import User, UserManager, Projects
 from django.core.paginator import Paginator
 from .forms import UserForm
+from django.http import HttpResponseRedirect
 
 
 def Home(request):
@@ -69,15 +70,19 @@ def search_user(request):
 
 
 def add_user(request):
-    submitted = False
+    form = UserForm()
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/add_user?submitted=True')
-    else:
-        form = UserForm(request.POST)
-        return
+            data = form.cleaned_data
+            UserManager.create_user(data['username'], data['email'], data['password'])
+            return redirect('home')
 
-    form = UserForm
     return render(request, 'members/add_user.html', {'form': form})
+
+
+def show_projects(request):
+    project_list = Projects.objects.all()
+    print(project_list)
+
+    return render(request, 'members/projects.html', {})
