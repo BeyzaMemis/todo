@@ -1,0 +1,29 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+ <div class="container-fluid"style="padding-left: 0px;">
+ <br/>
+  <div class="card border-success mb-3" style="max-width: 20rem;">
+   <div class="card-header bg-transparent border-success">{{project}}</div>
+   <div class="card-body text-success">
+    <h5 class="card-title">Project Details</h5>
+    <p class="card-text">
+
+     name = {{project.name}}<br/>
+     description = {{project.description}}<br/>
+     active_issue_count = {{project.active_issue_count}}<br/>
+     solved_issue_count = {{project.solved_issue_count}}<br/>
+     is_active = {{project.is_active}}<br/>
+     start_date = {{project.start_date}}<br/>
+     deadline = {{project.deadline}}<br/>
+
+
+    </p>
+   </div>
+   <div class="card-footer bg-transparent border-success">Footer</div>
+  </div>
+ </div>
+
+
+
+
+ {% endblock %}

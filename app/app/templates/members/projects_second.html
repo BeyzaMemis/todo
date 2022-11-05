@@ -1,0 +1,82 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+ {%  include 'members/status.html' %}
+
+
+
+ <div class="row">
+   <div class="col-md-12">
+    <h5>PROJECTS:</h5>
+    <hr>
+    <div class="card card-body">
+       <a class="btn btn-primary btn-sm btn-success" href="{% url 'create_project'%}">Create Project</a>
+        <br/>
+       <table class="table table-sm">
+           <tr>
+              <th>name</th>
+              <th>description</th>
+              <th>active_issue_count</th>
+              <th>solved_issue_count</th>
+              <th>is_active</th>
+              <th>start_date</th>
+              <th>deadline</th>
+              <th>Update</th>
+              <th>Delete</th>
+
+           </tr>
+           {% for project in projects %}
+           <tr>
+               <td>{{project.name}}</td>
+               <td>{{project.description}}</td>
+               <td>{{project.active_issue_count}}</td>
+               <td>{{project.solved_issue_count}}</td>
+               <td>{{project.is_active}}</td>
+               <td>{{project.start_date}}</td>
+               <td>{{project.deadline}}</td>
+               <td><a class="btn btn-sm btn-info" href="">Update</a></td>
+               <td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
+
+           </tr>
+
+           {% endfor %}
+       </table>
+       <nav aria-label="Page navigation example">
+       <ul class="pagination justify-content-center">
+
+
+
+        {% if projects.has_previous %}
+        	<li class="page-item"><a class="page-link" href="?page=1">&laquo First</a></li>
+
+        	<li class="page-item"><a class="page-link" href="?page={{ projects.previous_page_number }}">Previous</a></li>
+
+        {% endif %}
+
+        <!--
+        <li class="page-item disabled"><a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a></li>
+        -->
+
+        {% for i in nums %}
+        	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+
+        {% endfor %}
+
+
+        {% if projects.has_next %}
+        	<li class="page-item"><a class="page-link" href="?page={{ projects.next_page_number }}">Next</a></li>
+
+        	<li class="page-item"><a class="page-link" href="?page={{ projects.paginator.num_pages }}">Last &raquo</a></li>
+
+        {% endif %}
+
+         </ul>
+        </nav>
+        <br/>
+
+    </div>
+
+   </div>
+ </div>
+
+
+ {% endblock %}

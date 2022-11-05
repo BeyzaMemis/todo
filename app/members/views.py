@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 from core.models import User, UserManager, Projects
 from django.core.paginator import Paginator
-from .forms import UserForm
+from .forms import UserForm, ProjectForm
 from django.http import HttpResponseRedirect
 
 
@@ -36,7 +36,6 @@ def people(request):
     #     user_mail = user_name+'@test.com'
     #     password = "test"
     #     User.objects.create_user(user_name,user_mail,password)
-    user_list = User.objects.all()
     # pagination
 
     paginator = Paginator(User.objects.all(), 3)
@@ -44,14 +43,14 @@ def people(request):
     users = paginator.get_page(page)
     nums = "a" * users.paginator.num_pages
 
-    return render(request, 'members/people.html', {'user_list': user_list, 'users': users, 'nums': nums})
+    return render(request, 'members/people.html', {'users': users, 'nums': nums})
 
 
 def show_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
     except:
-        pass
+        user = None
     return render(request, 'members/user_detail.html', {'user': user})
 
 
@@ -75,7 +74,7 @@ def add_user(request):
         form = UserForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            UserManager.create_user(data['username'], data['email'], data['password'])
+            User.objects.create_user(data['username'], data['email'], data['password'])
             return redirect('home')
 
     return render(request, 'members/add_user.html', {'form': form})
@@ -83,6 +82,31 @@ def add_user(request):
 
 def show_projects(request):
     project_list = Projects.objects.all()
-    print(project_list)
+    total_projects = len(project_list)
+    # for i in range(20):
+    #     name = "Test"+str(i)
+    #     Projects.objects.create(name=name, is_active=True)
+    paginator = Paginator(project_list, 3)
+    page = request.GET.get('page')
+    projects = paginator.get_page(page)
+    nums = "a" * projects.paginator.num_pages
 
-    return render(request, 'members/projects.html', {})
+    return render(request, 'members/projects_second.html', {'projects': projects, 'nums': nums, 'total_projects': total_projects})
+
+
+def project_detail(request, project_id):
+    try:
+        project = Projects.objects.get(id=project_id)
+    except:
+        project = None
+    return render(request, 'members/project_detail.html', {'project': project})
+
+
+def create_project(request):
+    form = ProjectForm()
+
+
+    return render(request, 'members/create_project.html', {'form': form})
+
+def delete_project(request):
+    return
