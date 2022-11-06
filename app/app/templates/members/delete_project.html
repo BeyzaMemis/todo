@@ -1,0 +1,26 @@
+{% extends 'main/main.html' %}
+{% load static%}
+{% block content %}
+<div class="row" style="padding-left: 20px; padding-top: 20px">
+    <div class="col-md-6">
+        <div class="card text-center text-white  mb-3" id="delete-warn">
+         <div class="card-header">
+			  		<h5 class="card-title">Are you sure you want to delete "{{project}}" ?</h5>
+         </div>
+         <div class="card card-body">
+            <form action="{% url 'delete_project' project.id %}" method="POST">
+                {% csrf_token %}
+                <a class="btn btn-info" href="{% url 'show_projects'%}">Cancel</a>
+                <input class="btn btn-danger" type="submit" name="Confirm" value="Submit">
+
+            </form>
+         </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

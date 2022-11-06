@@ -10,5 +10,8 @@ urlpatterns = [
     path('add_user/', views.add_user, name='add_user'),
     path('projects/', views.show_projects, name='show_projects'),
     path('project_detail/<project_id>', views.project_detail, name='project_detail'),
-    path('create_project', views.create_project, name='create_project')
+    path('create_project', views.create_project, name='create_project'),
+    path('update_project/<str:pk>/', views.update_project, name='update_project'),
+    path('delete_project/<str:pk>/', views.delete_project, name='delete_project'),
+
 ]

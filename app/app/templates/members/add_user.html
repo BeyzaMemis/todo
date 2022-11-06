@@ -1,19 +1,31 @@
+
 {% extends 'main/main.html' %}
- {% block content %}
-  <h1> add User</h1>
-  <br/>
-  <br/>
-  {% if submitted %}
-     The User submitted successfully !!
+{% load static%}
+{% block content %}
+<div class="row" style="padding-left: 20px; padding-top: 20px">
+    <div class="col-md-6">
+        <div class="card text-center text-white  mb-3" id="delete-warn">
+         <div class="card-header">
+			  		<h5 class="card-title">Add User</h5>
+         </div>
+         <div class="card card-body">
+            <form action="" method="POST">
+             {% csrf_token %}
 
-  {% else %}
-   <form action="" method="POST">
-        {% csrf_token %}
+               {% for field in form %}
+                <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+                </div>
+                {% endfor %}
+             <input type="submit" value="Add" class="btn btn-outline-success">
+             </form>
+         </div>
+        </div>
+    </div>
+</div>
 
-        {{ form.as_p }}
-        <input type="submit" value="Add" class="btn btn-outline-success">
-   </form>
-  {% endif %}
+
+
 
 
 {% endblock %}

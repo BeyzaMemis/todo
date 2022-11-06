@@ -9,7 +9,7 @@
     <h5>PROJECTS:</h5>
     <hr>
     <div class="card card-body">
-       <a class="btn btn-primary btn-sm btn-success" href="{% url 'create_project'%}">Create Project</a>
+       <a class="btn btn-sm btn-success" href="{% url 'create_project'%}">Create Project</a>
         <br/>
        <table class="table table-sm">
            <tr>
@@ -33,8 +33,8 @@
                <td>{{project.is_active}}</td>
                <td>{{project.start_date}}</td>
                <td>{{project.deadline}}</td>
-               <td><a class="btn btn-sm btn-info" href="">Update</a></td>
-               <td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
+               <td><a class="btn btn-sm btn-info" href="{% url 'update_project' project.id %}">Update</a></td>
+               <td><a class="btn btn-sm btn-danger" href="{% url 'delete_project' project.id %}">Delete</a></td>
 
            </tr>
 

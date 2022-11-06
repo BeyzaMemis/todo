@@ -74,7 +74,8 @@ def add_user(request):
         form = UserForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            User.objects.create_user(data['username'], data['email'], data['password'])
+            print(data)
+            User.objects.create_user(data['username'], data['email'], data['password'], data['current_project'])
             return redirect('home')
 
     return render(request, 'members/add_user.html', {'form': form})
@@ -104,9 +105,34 @@ def project_detail(request, project_id):
 
 def create_project(request):
     form = ProjectForm()
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        print("form burda")
+        if form.is_valid():
+            print("form valid")
+            form.save()
+            return redirect('show_projects')
+
+    return render(request, 'members/create_project.html', {'form': form})
+
+
+def update_project(request, pk):
+    project = Projects.objects.get(id=pk)
+    form = ProjectForm(instance=project)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('show_projects')
 
 
     return render(request, 'members/create_project.html', {'form': form})
 
-def delete_project(request):
-    return
+def delete_project(request, pk):
+    project = Projects.objects.get(id=pk)
+    if request.method == 'POST':
+        project.delete()
+        return redirect('show_projects')
+    return render(request, 'members/delete_project.html', {'project': project})
+
