@@ -54,7 +54,6 @@ class UserManager(BaseUserManager):
 # Create your models here.
 class User(AbstractUser, PermissionsMixin):
     objects = UserManager()
-    related_group = models.CharField
     current_project = models.ForeignKey(to='core.Projects', related_name='current_project', on_delete=models.PROTECT, null=True)
     total_worked_project = models.IntegerField(default=0)  # functiona bağla
     active_work_project_count = models.IntegerField(default=0)  # functiona bağla

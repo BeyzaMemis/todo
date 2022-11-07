@@ -6,6 +6,7 @@ from django.shortcuts import render
 from core.models import User, UserManager, Projects
 from django.core.paginator import Paginator
 from .forms import UserForm, ProjectForm
+from .filters import ProjectFilter
 from django.http import HttpResponseRedirect
 
 
@@ -43,7 +44,7 @@ def people(request):
     users = paginator.get_page(page)
     nums = "a" * users.paginator.num_pages
 
-    return render(request, 'members/people.html', {'users': users, 'nums': nums})
+    return render(request, 'members/people_second.html', {'users': users, 'nums': nums})
 
 
 def show_user(request, user_id):
@@ -84,15 +85,20 @@ def add_user(request):
 def show_projects(request):
     project_list = Projects.objects.all()
     total_projects = len(project_list)
+    project_filter = ProjectFilter(request.GET, queryset=project_list)
+    project_list = project_filter.qs
     # for i in range(20):
     #     name = "Test"+str(i)
-    #     Projects.objects.create(name=name, is_active=True)
+    #     Projects.objects.create(name=name,description="deneme", is_active=True)
     paginator = Paginator(project_list, 3)
     page = request.GET.get('page')
     projects = paginator.get_page(page)
     nums = "a" * projects.paginator.num_pages
 
-    return render(request, 'members/projects_second.html', {'projects': projects, 'nums': nums, 'total_projects': total_projects})
+
+
+    return render(request, 'members/projects_second.html', {'projects': projects, 'nums': nums, 'total_projects': total_projects,
+                                                            'project_filter': project_filter})
 
 
 def project_detail(request, project_id):
