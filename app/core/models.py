@@ -17,12 +17,10 @@ class Project(models.Model):
     deadline = models.DateTimeField()
 
 
-
-
 class Projects(models.Model):
     name = models.CharField(max_length=257, unique=True, null=False)
     description = models.TextField()
-    active_issue_count = models.IntegerField(default=0,null=True)  # functiona bağlanmalı
+    active_issue_count = models.IntegerField(default=0, null=True)  # functiona bağlanmalı
     solved_issue_count = models.IntegerField(default=0, null=True)  # functiona bağlanmalı
     is_active = models.BooleanField()
     start_date = models.DateTimeField(default=timezone.now)
@@ -30,6 +28,7 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class UserManager(BaseUserManager):
 
@@ -54,8 +53,12 @@ class UserManager(BaseUserManager):
 # Create your models here.
 class User(AbstractUser, PermissionsMixin):
     objects = UserManager()
-    current_project = models.ForeignKey(to='core.Projects', related_name='current_project', on_delete=models.PROTECT, null=True)
+    current_project = models.ForeignKey(to='core.Projects', related_name='current_project', on_delete=models.PROTECT,
+                                        null=True)
     total_worked_project = models.IntegerField(default=0)  # functiona bağla
     active_work_project_count = models.IntegerField(default=0)  # functiona bağla
 
     REQUIRED_FIELDS = ['email']
+
+    def __str__(self):
+        return self.username

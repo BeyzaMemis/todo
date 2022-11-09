@@ -1,0 +1,30 @@
+{% extends 'main/main.html' %}
+{% load static%}
+{% block content %}
+<div class="row" style="padding-left: 20px; padding-top: 20px">
+    <div class="col-md-6">
+        <div class="card text-center text-white  mb-3" id="delete-warn">
+         <div class="card-header">
+			  		<h5 class="card-title">Pick the project you want to assign to {{user}}</h5>
+         </div>
+         <div class="card card-body">
+            <form action="{% url 'assign_project_to_user' user.id %}" method="POST">
+                {% csrf_token %}
+                <a class="btn btn-info" href="{% url 'people'%}">Cancel</a>
+                <input class="btn btn-danger" type="submit" name="Confirm" value="Submit">
+                <select class="form-select" aria-label="Default select example" name="project">
+                 <option selected>Open this select menu</option>
+                 {% for project in projects%}
+
+                 <option value="{{project.id}}" name="project">{{project}}</option>
+                 {% endfor %}
+
+                 </select>
+
+            </form>
+         </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

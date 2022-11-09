@@ -58,9 +58,9 @@
 
 
         {% if projects.has_previous %}
-        	<li class="page-item"><a class="page-link" href="?page=1">&laquo First</a></li>
+        	<li class="page-item"><a class="page-link" href="?name={{criteria.name}}&description={{criteria.description}}&active_issue_count={{criteria.active_issue_count}}&solved_issue_count={{criteria.solved_issue_count}}&is_active={{criteria.is_active}}&start_date={{criteria.start_date}}&deadline={{criteria.deadline}}&page=1">&laquo First</a></li>
 
-        	<li class="page-item"><a class="page-link" href="?page={{ projects.previous_page_number }}">Previous</a></li>
+        	<li class="page-item"><a class="page-link" href="?name={{criteria.name}}&description={{criteria.description}}&active_issue_count={{criteria.active_issue_count}}&solved_issue_count={{criteria.solved_issue_count}}&is_active={{criteria.is_active}}&start_date={{criteria.start_date}}&deadline={{criteria.deadline}}&page={{ projects.previous_page_number }}">Previous</a></li>
 
         {% endif %}
 
@@ -69,15 +69,14 @@
         -->
 
         {% for i in nums %}
-        	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+        	<li class="page-item"><a class="page-link" href="?name={{criteria.name}}&description={{criteria.description}}&active_issue_count={{criteria.active_issue_count}}&solved_issue_count={{criteria.solved_issue_count}}&is_active={{criteria.is_active}}&start_date={{criteria.start_date}}&deadline={{criteria.deadline}}&page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
 
         {% endfor %}
 
 
         {% if projects.has_next %}
-        	<li class="page-item"><a class="page-link" href="?page={{ projects.next_page_number }}">Next</a></li>
-
-        	<li class="page-item"><a class="page-link" href="?page={{ projects.paginator.num_pages }}">Last &raquo</a></li>
+        	<li class="page-item"><a class="page-link" href="?name={{criteria.name}}&description={{criteria.description}}&active_issue_count={{criteria.active_issue_count}}&solved_issue_count={{criteria.solved_issue_count}}&is_active={{criteria.is_active}}&start_date={{criteria.start_date}}&deadline={{criteria.deadline}}&page={{ projects.next_page_number }}">Next</a></li>
+        	<li class="page-item"><a class="page-link" href="?name={{criteria.name}}&description={{criteria.description}}&active_issue_count={{criteria.active_issue_count}}&solved_issue_count={{criteria.solved_issue_count}}&is_active={{criteria.is_active}}&start_date={{criteria.start_date}}&deadline={{criteria.deadline}}&page={{ projects.paginator.num_pages }}">Last &raquo</a></li>
 
         {% endif %}
 

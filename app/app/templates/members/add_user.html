@@ -17,6 +17,15 @@
                 {{ field.label_tag }} {{ field }}
                 </div>
                 {% endfor %}
+             <select class="form-select-lg" aria-label="Default select example">
+                 <option selected>Open this select menu</option>
+                 {% for project in projects%}
+
+                 <option value="{{project.id}}" name="current_project">{{project}}</option>
+                 {% endfor %}
+
+             </select>
+                <br>
              <input type="submit" value="Add" class="btn btn-outline-success">
              </form>
          </div>

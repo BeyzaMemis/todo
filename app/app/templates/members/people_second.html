@@ -36,9 +36,9 @@
                <td>{{user.current_project}}</td>
                <td>{{user.total_worked_project}}</td>
                <td>{{user.active_work_project_count}}</td>
-               <td><a class="btn btn-sm btn-outline-info" href="">Update</a></td>
-               <td><a class="btn btn-sm btn-outline-danger" href="">Delete</a></td>
-               <td><a class="btn btn-sm btn-outline-warning" href="">Assign</a></td>
+               <td><a class="btn btn-sm btn-outline-info" href="{% url 'update_user' user.id %}">Update</a></td>
+               <td><a class="btn btn-sm btn-outline-danger" href="{% url 'delete_user' user.id %}">Delete</a></td>
+               <td><a class="btn btn-sm btn-outline-warning" href="{% url 'assign_project_to_user' user.id %}">Assign</a></td>
 
            </tr>
 
@@ -67,7 +67,7 @@
 
 
         {% if users.has_next %}
-        	<li class="page-item"><a class="page-link" href="?page={{ users.next_page_number }}">Next</a></li>
+        	<li class="page-item"><a class="page-link" href="?name=1&description=&active_issue_count=&solved_issue_count=&is_active=unknown&start_date=&deadline=&page={{ users.next_page_number }}">Next</a></li>
 
         	<li class="page-item"><a class="page-link" href="?page={{ users.paginator.num_pages }}">Last &raquo</a></li>
 
