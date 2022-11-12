@@ -17,7 +17,7 @@
               <th>is_staff</th>
               <th>is_active</th>
               <th>date_joined</th>
-              <th>current_project</th>
+              <th>current_projects</th>
               <th>total_worked_project</th>
               <th>active_work_project_count</th>
               <th>Update</th>
@@ -33,7 +33,7 @@
                <td>{{user.is_staff}}</td>
                <td>{{user.is_active}}</td>
                <td>{{user.date_joined}}</td>
-               <td>{{user.current_project}}</td>
+               <td>{{user.project_list}}</td>
                <td>{{user.total_worked_project}}</td>
                <td>{{user.active_work_project_count}}</td>
                <td><a class="btn btn-sm btn-outline-info" href="{% url 'update_user' user.id %}">Update</a></td>

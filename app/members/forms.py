@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from core.models import User, Projects
+from core.models import User, Project
 
 
 class UserForm(ModelForm):
@@ -19,7 +19,7 @@ class UserForm(ModelForm):
 
 
 class UserUpdateForm(ModelForm):
-    current_project = forms.ModelChoiceField(queryset=Projects.objects.all(), empty_label=None)
+    current_project = forms.ModelChoiceField(queryset=Project.objects.all(), empty_label=None)
 
     class Meta:
         model = User
@@ -42,5 +42,5 @@ class ProjectForm(ModelForm):
     path = forms.CharField(required=False)
 
     class Meta:
-        model = Projects
+        model = Project
         fields = '__all__'

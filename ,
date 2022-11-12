@@ -1,0 +1,20 @@
+pagination fixed, assign project added
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch beyza
+# Changes to be committed:
+#	modified:   app/app/templates/members/add_user.html
+#	new file:   app/app/templates/members/assign_project_to_user.html
+#	modified:   app/app/templates/members/create_project_old.html
+#	new file:   app/app/templates/members/delete_user.html
+#	modified:   app/app/templates/members/people_second.html
+#	modified:   app/app/templates/members/projects_second.html
+#	new file:   app/app/templates/members/update_user.html
+#	modified:   app/core/models.py
+#	modified:   app/members/forms.py
+#	new file:   app/members/templatetags/__init__.py
+#	new file:   app/members/templatetags/pagination_extras.py
+#	modified:   app/members/urls.py
+#	modified:   app/members/views.py
+#

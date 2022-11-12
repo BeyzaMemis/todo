@@ -6,18 +6,20 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 
-
-class Project(models.Model):
+class Issue(models.Model):
     name = models.CharField(max_length=257, unique=True, null=False)
     description = models.TextField()
-    active_issue_count = models.IntegerField(default=0)  # functiona bağlanmalı
-    solved_issue_count = models.IntegerField(default=0)  # functiona bağlanmalı
     is_active = models.BooleanField()
-    start_date = models.DateTimeField()
+    opened_by = models.CharField(max_length=257, null=False)
+    assigned_by = models.CharField(max_length=257, null=True)
+    assigned_to = models.CharField(max_length=257, null=True)
+    assignment_date = models.DateTimeField()
+    created_at = models.DateTimeField()
     deadline = models.DateTimeField()
+    related_issues = models.TextField()# kaldırılabilir
 
 
-class Projects(models.Model):
+class Project(models.Model):
     name = models.CharField(max_length=257, unique=True, null=False)
     description = models.TextField()
     active_issue_count = models.IntegerField(default=0, null=True)  # functiona bağlanmalı
@@ -53,12 +55,16 @@ class UserManager(BaseUserManager):
 # Create your models here.
 class User(AbstractUser, PermissionsMixin):
     objects = UserManager()
-    current_project = models.ForeignKey(to='core.Projects', related_name='current_project', on_delete=models.PROTECT,
-                                        null=True)
     total_worked_project = models.IntegerField(default=0)  # functiona bağla
     active_work_project_count = models.IntegerField(default=0)  # functiona bağla
+    project_list = models.TextField(null=True)
 
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.username
+
+
+class UserProjectRelation(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)

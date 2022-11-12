@@ -10,5 +10,5 @@ class ProjectFilter(django_filters.FilterSet):
     deadline = CharFilter(field_name='deadline', lookup_expr='lte')
 
     class Meta:
-        model = Projects
+        model = Project
         fields = '__all__'

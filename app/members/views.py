@@ -4,11 +4,29 @@ from django.contrib import messages
 from django.views import View
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from core.models import User, UserManager, Projects
+from core.models import User, UserManager, Project, UserProjectRelation, Issue
 from django.core.paginator import Paginator
 from .forms import UserForm, ProjectForm, UserUpdateForm
 from .filters import ProjectFilter
 from django.http import HttpResponseRedirect
+from django.contrib import messages
+
+
+def get_user_current_projects(user_id):
+    projects = UserProjectRelation.objects.filter(user__id=user_id).values('project')
+    project_names = []
+    for project in projects:
+        project_names.append(Project.objects.get(id=project.get('project')).name)
+
+    return ', '.join(project_names)
+
+
+def check_user_project_relation_exist(user_id, project_id):
+    relations = UserProjectRelation.objects.filter(user__id=user_id)
+    for relation in relations:
+        if relation.project.id == project_id:
+            return True
+    return False
 
 
 def Home(request):
@@ -39,12 +57,11 @@ class People(View):
         #     user_mail = user_name+'@test.com'
         #     password = "test"
         #     User.objects.create_user(user_name,user_mail,password)
-        # pagination
 
         paginator = Paginator(User.objects.all(), 3)
         page = request.GET.get('page')
         users = paginator.get_page(page)
-        nums = "a" * users.paginator.num_pages
+        nums = ["page"] * users.paginator.num_pages
 
         return render(request, 'members/people_second.html', {'users': users, 'nums': nums})
 
@@ -61,31 +78,30 @@ class SearchUser(View):
 
     def post(self, request):
         empty_list = False
-        if request.method == 'POST':
-            searched = request.POST.get('searched')
-            searched_users = User.objects.filter(username__icontains=searched)
-            if len(searched_users) == 0:
-                empty_list = True
+        searched = request.POST.get('searched')
+        searched_users = User.objects.filter(username__icontains=searched)
+        if len(searched_users) == 0:
+            empty_list = True
 
-            return render(request, 'members/user_search.html',
-                          {'searched': searched, 'users': searched_users, 'empty_list': empty_list})
-        else:
-            return render(request, 'members/user_search.html', {})
+        return render(request, 'members/user_search.html',
+                      {'searched': searched, 'users': searched_users, 'empty_list': empty_list})
+
+    def get(self, request):
+        return render(request, 'members/user_search.html', {})
 
 
 class AddUser(View):
 
     def post(self, request):
-        if request.method == "POST":
-            form = UserForm(request.POST)
-            if form.is_valid():
-                data = form.cleaned_data
+        form = UserForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
 
-                User.objects.create_user(data['username'], data['email'], data['password'], )
-                return redirect('home')
+            User.objects.create_user(data['username'], data['email'], data['password'], )
+            return redirect('home')
 
     def get(self, request):
-        projects = Projects.objects.all()
+        projects = Project.objects.all()
         form = UserForm()
         return render(request, 'members/add_user.html', {'form': form, 'projects': projects})
 
@@ -93,18 +109,17 @@ class AddUser(View):
 class ShowProjects(View):
 
     def get(self, request):
-        project_list = Projects.objects.all()
+        project_list = Project.objects.all()
         total_projects = len(project_list)
         project_filter = ProjectFilter(request.GET, queryset=project_list)
         project_list = project_filter.qs
-        print(project_filter.data)
         # for i in range(20):
         #     name = "Test"+str(i)
         #     Projects.objects.create(name=name,description="deneme", is_active=True)
         paginator = Paginator(project_list, 3)
         page = request.GET.get('page')
         projects = paginator.get_page(page)
-        nums = "a" * projects.paginator.num_pages
+        nums = ["page"] * projects.paginator.num_pages
 
         return render(request, 'members/projects_second.html',
                       {'projects': projects, 'nums': nums, 'total_projects': total_projects,
@@ -113,7 +128,7 @@ class ShowProjects(View):
 
 def project_detail(request, project_id):
     try:
-        project = Projects.objects.get(id=project_id)
+        project = Project.objects.get(id=project_id)
     except:
         project = None
     return render(request, 'members/project_detail.html', {'project': project})
@@ -122,13 +137,10 @@ def project_detail(request, project_id):
 class CreateProject(View):
 
     def post(self, request):
-        if request.method == 'POST':
-            form = ProjectForm(request.POST)
-            print("form burda")
-            if form.is_valid():
-                print("form valid")
-                form.save()
-                return redirect('show_projects')
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_projects')
 
     def get(self, request):
         form = ProjectForm()
@@ -137,17 +149,16 @@ class CreateProject(View):
 
 class UpdateProject(View):
     def post(self, request, pk):
-        project = Projects.objects.get(id=pk)
         form = request.POST
-        Projects.objects.filter(id=pk).update(name=form.get('name'), description=form.get('description'),
-                                              active_issue_count=form.get('active_issue_count'),
-                                              solved_issue_count=form.get('solved_issue_count'),
-                                              start_date=form.get('start_date'), deadline=form.get('deadline'))
+        Project.objects.filter(id=pk).update(name=form.get('name'), description=form.get('description'),
+                                             active_issue_count=form.get('active_issue_count'),
+                                             solved_issue_count=form.get('solved_issue_count'),
+                                             start_date=form.get('start_date'), deadline=form.get('deadline'))
 
         return redirect('show_projects')
 
     def get(self, request, pk):
-        project = Projects.objects.get(id=pk)
+        project = Project.objects.get(id=pk)
         form = ProjectForm(instance=project)
 
         return render(request, 'members/create_project_old.html', {'form': form})
@@ -156,17 +167,17 @@ class UpdateProject(View):
 class DeleteProject(View):
 
     def post(self, request, pk):
-        project = Projects.objects.get(id=pk)
-        if request.method == 'POST':
-            user = User.objects.get(current_project_id=project.id)
-            if user:
+        project = Project.objects.get(id=pk)
+        users = User.objects.filter(current_project_id=project.id)
+        if users:
+            for user in users:
                 User.objects.filter(id=user.id).update(current_project_id=None)
 
-            project.delete()
-            return redirect('show_projects')
+        project.delete()
+        return redirect('show_projects')
 
     def get(self, request, pk):
-        project = Projects.objects.get(id=pk)
+        project = Project.objects.get(id=pk)
         return render(request, 'members/delete_project.html', {'project': project})
 
 
@@ -204,11 +215,40 @@ class DeleteUser(View):
 class AssignProjectToUser(View):
 
     def post(self, request, pk):
-        User.objects.filter(id=pk).update(current_project=request.POST.get('project'))
+        user = User.objects.get(id=pk)
+        project = Project.objects.get(id=request.POST.get('project'))
+        if check_user_project_relation_exist(pk, project.id):
+            messages.info(request, 'The project already assigned')
+            projects = Project.objects.all()
+            return render(request, 'members/assign_project_to_user.html', {'user': user, 'projects': projects})
+
+        UserProjectRelation.objects.create(user=user, project=project)
+        project_list = get_user_current_projects(pk)
+        User.objects.filter(id=pk).update(project_list=project_list)
+        username = None
+
+        print(request.user.get_username())
 
         return redirect('people')
 
     def get(self, request, pk):
         user = User.objects.get(id=pk)
-        projects = Projects.objects.all()
+        projects = Project.objects.all()
         return render(request, 'members/assign_project_to_user.html', {'user': user, 'projects': projects})
+
+
+class ShowIssues(View):
+
+    def get(self, request):
+        # for i in range(20):
+        #     user_name = 'Test'+str(i)
+        #     user_mail = user_name+'@test.com'
+        #     password = "test"
+        #     User.objects.create_user(user_name,user_mail,password)
+
+        paginator = Paginator(Issue.objects.all(), 3)
+        page = request.GET.get('page')
+        issues = paginator.get_page(page)
+        nums = ["page"] * issues.paginator.num_pages
+
+        return render(request, 'members/people_second.html', {'users': issues, 'nums': nums})
