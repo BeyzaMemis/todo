@@ -1,0 +1,89 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+ {%  include 'members/status_people.html' %}
+
+
+ <div class="row">
+   <div class="col-md-12">
+    <h5>Issues:</h5>
+    <hr>
+    <div class="card card-body">
+       <a class="btn btn-sm btn-success" href="{% url 'update_or_create_issue' None%}">Create Issue</a>
+        <br/>
+       <table class="table table-sm">
+           <tr>
+              <th>name</th>
+              <th>description</th>
+              <th>is_active</th>
+              <th>related_project</th>
+              <th>opened_by</th>
+              <th>assigned_by</th>
+              <th>assigned_to</th>
+              <th>assignment_date</th>
+              <th>created_at</th>
+              <th>deadline</th>
+              <th>Update</th>
+              <th>Delete</th>
+
+
+           </tr>
+           {% for issue in issues %}
+           <tr>
+               <td>{{issue.name}}</td>
+               <td>{{issue.description}}</td>
+               <td>{{issue.is_active}}</td>
+               <td><a class="link-dark" href="{% url 'project_detail' issue.related_project %}">{{issue.related_project}}</a></td>
+               <td>{{issue.opened_by}}</td>
+               <td>{{issue.assigned_by}}</td>
+               <td>{{issue.assigned_to}}</td>
+               <td>{{issue.assignment_date}}</td>
+               <td>{{issue.created_at}}</td>
+               <td>{{issue.deadline}}</td>
+               <td><a class="btn btn-sm btn-outline-info" href="{% url 'update_or_create_issue' issue.id %}">Update</a></td>
+               <td><a class="btn btn-sm btn-outline-danger" href="{% url 'delete_issue' issue.id %}">Delete</a></td>
+
+
+           </tr>
+
+           {% endfor %}
+       </table>
+       <nav aria-label="Page navigation example">
+       <ul class="pagination justify-content-center">
+
+
+
+        {% if issues.has_previous %}
+        	<li class="page-item"><a class="page-link" href="?page=1">&laquo First</a></li>
+
+        	<li class="page-item"><a class="page-link" href="?page={{ issues.previous_page_number }}">Previous</a></li>
+
+        {% endif %}
+
+        <!--
+        <li class="page-item disabled"><a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a></li>
+        -->
+
+        {% for i in nums %}
+        	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+
+        {% endfor %}
+
+
+        {% if issues.has_next %}
+        	<li class="page-item"><a class="page-link" href="?page={{ issues.next_page_number }}">Next</a></li>
+
+        	<li class="page-item"><a class="page-link" href="?page={{ issues.paginator.num_pages }}">Last &raquo</a></li>
+
+        {% endif %}
+
+         </ul>
+        </nav>
+        <br/>
+
+    </div>
+
+   </div>
+ </div>
+
+
+ {% endblock %}

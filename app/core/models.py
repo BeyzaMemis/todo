@@ -6,18 +6,6 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 
-class Issue(models.Model):
-    name = models.CharField(max_length=257, unique=True, null=False)
-    description = models.TextField()
-    is_active = models.BooleanField()
-    opened_by = models.CharField(max_length=257, null=False)
-    assigned_by = models.CharField(max_length=257, null=True)
-    assigned_to = models.CharField(max_length=257, null=True)
-    assignment_date = models.DateTimeField()
-    created_at = models.DateTimeField()
-    deadline = models.DateTimeField()
-    related_issues = models.TextField()# kaldırılabilir
-
 
 class Project(models.Model):
     name = models.CharField(max_length=257, unique=True, null=False)
@@ -63,6 +51,23 @@ class User(AbstractUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Issue(models.Model):
+    name = models.CharField(max_length=257, unique=True, null=False)
+    description = models.TextField()
+    is_active = models.BooleanField()
+    related_project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
+    opened_by = models.CharField(max_length=257, null=False)
+    assigned_by = models.CharField(max_length=257, null=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    assignment_date = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    deadline = models.DateTimeField(null=True)
+    related_issues = models.TextField()  # kaldırılabilir
+
+    def __str__(self):
+        return self.name
 
 
 class UserProjectRelation(models.Model):

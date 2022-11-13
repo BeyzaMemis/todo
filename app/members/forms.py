@@ -1,11 +1,9 @@
 from django import forms
 from django.forms import ModelForm
-from core.models import User, Project
+from core.models import User, Project, Issue
 
 
 class UserForm(ModelForm):
-
-
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
@@ -13,7 +11,6 @@ class UserForm(ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'password': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
-
 
         }
 
@@ -44,3 +41,10 @@ class ProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = '__all__'
+
+
+class IssuesForm(ModelForm):
+    class Meta:
+        model = Issue
+        fields = ['name', 'description', 'is_active', 'related_project', 'opened_by', 'assigned_by', 'assigned_to',
+                  'assignment_date', 'created_at', 'deadline']

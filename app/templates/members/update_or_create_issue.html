@@ -1,0 +1,106 @@
+{% extends 'main/main.html' %}
+{% load static%}
+ {% block content %}
+
+
+<div class="row">
+    <div class="col-md-6" style="padding-left: 30px; padding-top: 20px">
+        <div class="card-header" id="delete-warn">
+			  		<h5 class="card-title text-white ">{{operation}} Issue</h5>
+         </div>
+        <div class="card card-body">
+            <form action="" method="POST">
+                {% csrf_token %}
+
+
+                <div class="form-group">
+                  <label for="id_name">Name:</label>
+
+                    <input type="text" class="form-control" name="name" maxlength="257"  id="id_name" value={{form.name.value}} >
+                </div>
+                <div class="form-group">
+                  <label for="id_description">Description:</label>
+                    <textarea class="form-control" name="description" rows="5" id="id_description" value={{form.description}} ></textarea>
+
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-3">
+                         <label for="id_related_project">Related Project:</label>
+
+                        <select class="form-select" name="related_project" id ="id_related_project">
+                          {% for project in projects %}
+                             <option value="{{project.id}}">{{project}}</option>
+                          {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                         <label for="id_assigned_to">Assigned To:</label>
+
+                        <select class="form-select" name="assigned_to" id ="id_assigned_to">
+                          {% for user in users %}
+                             <option value="{{user.id}}">{{user}}</option>
+                          {% endfor %}
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group">
+                  <label for="id_opened_by">Opened By:</label>
+
+                    <input type="text" class="form-control" name="opened_by" maxlength="257"  id="id_opened_by" value={{form.opened_by.value}} readonly>
+
+                </div>
+                <div class="form-group">
+                  <label for="id_assigned_by">Assigned by:</label>
+
+                    <input type="text" class="form-control" name="assigned_by" maxlength="257"  id="id_assigned_by" value={{form.assigned_by.value}} readonly>
+
+                </div>
+
+
+                <div class="form-check">
+                    <input type="checkbox" name="is_active" class="form-check-input" id="id_is_active" checked="{{form.is_active.checked}}">
+                    <label class="form-check-label" for="id_is_active">Active</label>
+
+                </div>
+                <br/>
+                <div class="form-row">
+                    <div class="col-lg-3">
+                         <label for="id_assignment_date">Assignment Date:</label>
+                         <input type="datetime-local" class="date-icon" id="id_assignment_date" name="assignment_date" placeholder="{{form.assignment_date.value}}" >
+                    </div>
+                    <div class="col-lg-3">
+                         <label for="id_deadline">Deadline:</label>
+                         <input type="datetime-local" class="date-icon" id="id_deadline" name="deadline" placeholder="{{form.deadline.value}}" >
+
+                    </div>
+
+
+                </div>
+                <br/>
+
+
+
+              <input class="btn btn-success" type="submit" name="Submit" value="Submit">
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+{% endif %}
+</div>
+
+
+
+
+ {% endblock %}

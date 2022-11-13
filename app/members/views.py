@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 from core.models import User, UserManager, Project, UserProjectRelation, Issue
 from django.core.paginator import Paginator
-from .forms import UserForm, ProjectForm, UserUpdateForm
+from .forms import UserForm, ProjectForm, UserUpdateForm, IssuesForm
 from .filters import ProjectFilter
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -126,9 +126,9 @@ class ShowProjects(View):
                        'project_filter': project_filter, 'criteria': project_filter.data})
 
 
-def project_detail(request, project_id):
+def project_detail(request, name):
     try:
-        project = Project.objects.get(id=project_id)
+        project = Project.objects.get(name=name)
     except:
         project = None
     return render(request, 'members/project_detail.html', {'project': project})
@@ -227,8 +227,6 @@ class AssignProjectToUser(View):
         User.objects.filter(id=pk).update(project_list=project_list)
         username = None
 
-        print(request.user.get_username())
-
         return redirect('people')
 
     def get(self, request, pk):
@@ -241,14 +239,87 @@ class ShowIssues(View):
 
     def get(self, request):
         # for i in range(20):
-        #     user_name = 'Test'+str(i)
-        #     user_mail = user_name+'@test.com'
-        #     password = "test"
-        #     User.objects.create_user(user_name,user_mail,password)
+        #     name = 'Test'+str(i)
+        #     desc = name + 'description'
+        #     created_by = request.user.get_username()
+        #
+        #     Issue.objects.create(name=name,description=desc,opened_by=created_by, is_active=True)
 
         paginator = Paginator(Issue.objects.all(), 3)
         page = request.GET.get('page')
         issues = paginator.get_page(page)
+        print(issues)
         nums = ["page"] * issues.paginator.num_pages
 
-        return render(request, 'members/people_second.html', {'users': issues, 'nums': nums})
+        return render(request, 'members/issues.html', {'issues': issues, 'nums': nums})
+
+
+class UpdateOrCreateIssue(View):
+
+    def post(self, request, pk=None):
+        form = request.POST
+        user = None
+        project = None
+
+        if form.get('assigned_to') is not None:
+            user = User.objects.get(id=form.get('assigned_to'))
+        if form.get('related_project') is not None:
+            project = Project.objects.get(id=form.get('assigned_to'))
+
+        is_active = None
+        if form.get('is_active') is None:
+            is_active = False
+        else:
+            is_active = True
+
+        if pk == 'None':
+            Issue.objects.create(
+                name=form.get('name'), description=form.get('description'),
+                is_active=is_active,
+                related_project=project,
+                opened_by=request.user.get_username(),
+                assigned_by=request.user.get_username(),
+                assignment_date=form.get('assignment_date'),
+                assigned_to=user,
+                deadline=form.get('deadline'))
+        else:
+            Issue.objects.filter(id=pk).update(name=form.get('name'), description=form.get('description'),
+                                               is_active=is_active,
+                                               related_project=project,
+                                               assigned_by=request.user.get_username(),
+                                               assignment_date=form.get('assignment_date'),
+                                               assigned_to=user,
+                                               deadline=form.get('deadline'))
+
+        return redirect('issues')
+
+    def get(self, request, pk):
+        projects = Project.objects.all()
+        users = User.objects.all()
+
+        if pk != "None":
+            issue = Issue.objects.get(id=pk)
+            form = IssuesForm(instance=issue)
+            operation = 'Update'
+            return render(request, 'members/update_or_create_issue.html', {'form': form, 'projects': projects, 'users': users,
+                                                                 'operation': operation})
+        else:
+            operation = 'Create'
+            form = IssuesForm()
+            return render(request, 'members/update_or_create_issue.html',
+                          {'form': form, 'projects': projects, 'users': users, 'operation': operation})
+
+
+class DeleteIssue(View):
+
+    def post(self, request, pk):
+        issue = Issue.objects.get(id=pk)
+        issue.delete()
+
+        return redirect('issues')
+
+    def get(self, request, pk):
+        issue = Issue.objects.get(id=pk)
+        return render(request, 'members/delete_issue.html', {'issue': issue})
+
+
