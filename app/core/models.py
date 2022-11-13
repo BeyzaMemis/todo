@@ -26,6 +26,7 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.username = username
+        user.is_staff = True
         user.current_project = project
         user.save(using=self.db)
 

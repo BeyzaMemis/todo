@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views import View
 from django.views.generic import TemplateView
@@ -11,6 +11,7 @@ from .forms import UserForm, ProjectForm, UserUpdateForm, IssuesForm
 from .filters import ProjectFilter
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 def get_user_current_projects(user_id):
@@ -30,6 +31,7 @@ def check_user_project_relation_exist(user_id, project_id):
     return False
 
 
+@login_required(login_url="login_user")
 def Home(request):
     return render(request, 'main/home.html', {})
 
@@ -45,13 +47,20 @@ def login_user(request):
             login(request, user)
             return redirect('home')
         else:
-
+            messages.info(request, "User name OR password is not correct !")
             return redirect('login_user')
     else:
         return render(request, 'members/login.html', {})
 
 
-class People(View):
+def log_out_user(request):
+    logout(request)
+    return redirect('login_user')
+
+
+class People(LoginRequiredMixin, View):
+    login_url = 'login_user'
+
     def get(self, request):
         # for i in range(20):
         #     user_name = 'Test'+str(i)
@@ -91,7 +100,8 @@ class SearchUser(View):
         return render(request, 'members/user_search.html', {})
 
 
-class AddUser(View):
+class AddUser(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request):
         form = UserForm(request.POST)
@@ -107,7 +117,8 @@ class AddUser(View):
         return render(request, 'members/add_user.html', {'form': form, 'projects': projects})
 
 
-class ShowProjects(View):
+class ShowProjects(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def get(self, request):
         project_list = Project.objects.all()
@@ -135,7 +146,8 @@ def project_detail(request, name):
     return render(request, 'members/project_detail.html', {'project': project})
 
 
-class CreateProject(View):
+class CreateProject(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request):
         form = ProjectForm(request.POST)
@@ -148,7 +160,8 @@ class CreateProject(View):
         return render(request, 'members/create_project_old.html', {'form': form})
 
 
-class UpdateProject(View):
+class UpdateProject(LoginRequiredMixin, View):
+    login_url = 'login_user'
     def post(self, request, pk):
         form = request.POST
         Project.objects.filter(id=pk).update(name=form.get('name'), description=form.get('description'),
@@ -165,7 +178,8 @@ class UpdateProject(View):
         return render(request, 'members/create_project_old.html', {'form': form})
 
 
-class DeleteProject(View):
+class DeleteProject(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request, pk):
         project = Project.objects.get(id=pk)
@@ -182,7 +196,8 @@ class DeleteProject(View):
         return render(request, 'members/delete_project.html', {'project': project})
 
 
-class UpdateUser(View):
+class UpdateUser(LoginRequiredMixin, View):
+    login_url = 'login_user'
     def post(self, request, pk):
 
         user = User.objects.get(id=pk)
@@ -200,7 +215,8 @@ class UpdateUser(View):
         return render(request, 'members/update_user.html', {'form': form})
 
 
-class DeleteUser(View):
+class DeleteUser(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request, pk):
         user = User.objects.get(id=pk)
@@ -213,7 +229,8 @@ class DeleteUser(View):
         return render(request, 'members/delete_user.html', {'user': user})
 
 
-class AssignProjectToUser(View):
+class AssignProjectToUser(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request, pk):
         user = User.objects.get(id=pk)
@@ -236,7 +253,8 @@ class AssignProjectToUser(View):
         return render(request, 'members/assign_project_to_user.html', {'user': user, 'projects': projects})
 
 
-class ShowIssues(View):
+class ShowIssues(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def get(self, request):
         # for i in range(20):
@@ -255,7 +273,8 @@ class ShowIssues(View):
         return render(request, 'members/issues.html', {'issues': issues, 'nums': nums})
 
 
-class UpdateOrCreateIssue(View):
+class UpdateOrCreateIssue(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request, pk=None):
         form = request.POST
@@ -302,8 +321,9 @@ class UpdateOrCreateIssue(View):
             issue = Issue.objects.get(id=pk)
             form = IssuesForm(instance=issue)
             operation = 'Update'
-            return render(request, 'members/update_or_create_issue.html', {'form': form, 'projects': projects, 'users': users,
-                                                                 'operation': operation})
+            return render(request, 'members/update_or_create_issue.html',
+                          {'form': form, 'projects': projects, 'users': users,
+                           'operation': operation})
         else:
             operation = 'Create'
             form = IssuesForm()
@@ -311,7 +331,8 @@ class UpdateOrCreateIssue(View):
                           {'form': form, 'projects': projects, 'users': users, 'operation': operation})
 
 
-class DeleteIssue(View):
+class DeleteIssue(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def post(self, request, pk):
         issue = Issue.objects.get(id=pk)
@@ -324,7 +345,8 @@ class DeleteIssue(View):
         return render(request, 'members/delete_issue.html', {'issue': issue})
 
 
-class GetProjectIssues(View):
+class GetProjectIssues(LoginRequiredMixin, View):
+    login_url = 'login_user'
 
     def get(self, request, pk):
         has_issue = False
@@ -334,17 +356,19 @@ class GetProjectIssues(View):
 
         return render(request, 'members/get_project_issues.html', {'issues': issues, 'has_issue': has_issue})
 
-class registerPage(View):
+
+class RegisterPage(View):
     def post(self, request):
-        form = UserForm(request.POST)
-        print("form valis", form.is_valid())
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data
-            messages.success(request, "Account was created for " + user.get('name'))
-            return redirect('login_user')
+        form = request.POST
+        try:
+            User.objects.create_user(form.get('username'), form.get('email'), form.get('password'))
+        except:
+            messages.error(request, 'User already exist')
+            return redirect('register_user')
+
+        messages.success(request, "Account was created for " + form.get('username'))
+        return redirect('login_user')
 
     def get(self, request):
         form = UserForm()
         return render(request, 'members/register.html', {'form': form})
-
