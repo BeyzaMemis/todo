@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('login_user/', views.login_user, name='login_user'),
+    path('register_user/', views.registerPage.as_view(), name='register_user'),
     path('Home/', views.Home, name='home'),
     path('people/', views.People.as_view(), name='people'),
     path('show_user/<user_id>', views.show_user, name='user_detail'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('issues/', views.ShowIssues.as_view(), name='issues'),
     path('update_issue/<str:pk>/', views.UpdateOrCreateIssue.as_view(), name='update_or_create_issue'),
     path('delete_issue/<str:pk>/', views.DeleteIssue.as_view(), name='delete_issue'),
+    path('get_project_issues/<str:pk>/', views.GetProjectIssues.as_view(), name='get_project_issues'),
 
 
 ]

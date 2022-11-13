@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+
 from django.contrib import messages
 from django.views import View
 from django.views.generic import TemplateView
@@ -322,4 +323,28 @@ class DeleteIssue(View):
         issue = Issue.objects.get(id=pk)
         return render(request, 'members/delete_issue.html', {'issue': issue})
 
+
+class GetProjectIssues(View):
+
+    def get(self, request, pk):
+        has_issue = False
+        issues = Issue.objects.filter(related_project__id=pk, is_active=True)
+        if len(issues) != 0:
+            has_issue = True
+
+        return render(request, 'members/get_project_issues.html', {'issues': issues, 'has_issue': has_issue})
+
+class registerPage(View):
+    def post(self, request):
+        form = UserForm(request.POST)
+        print("form valis", form.is_valid())
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data
+            messages.success(request, "Account was created for " + user.get('name'))
+            return redirect('login_user')
+
+    def get(self, request):
+        form = UserForm()
+        return render(request, 'members/register.html', {'form': form})
 

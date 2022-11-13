@@ -5,7 +5,7 @@
 <div class="row">
 	<div class="col">
 		<div class="card card-body">
-			<form method="get">
+			<form method="get" class="form-inline">
                 {{project_filter.form}}
 
 		    <button class="btn btn-primary" type="submit">Search</button>
@@ -23,9 +23,9 @@
     <div class="card card-body">
        <a class="btn btn-sm btn-success" href="{% url 'create_project'%}">Create Project</a>
         <br/>
-       <table class="table table-sm">
+       <table class="table table-sm" data-filter-control="true">
            <tr>
-              <th>name</th>
+              <th >name</th>
               <th>description</th>
               <th>active_issue_count</th>
               <th>solved_issue_count</th>
@@ -34,6 +34,7 @@
               <th>deadline</th>
               <th>Update</th>
               <th>Delete</th>
+              <th>Issues</th>
 
            </tr>
            {% for project in projects %}
@@ -47,6 +48,7 @@
                <td>{{project.deadline}}</td>
                <td><a class="btn btn-sm btn-outline-info" href="{% url 'update_project' project.id %}">Update</a></td>
                <td><a class="btn btn-sm btn-outline-danger" href="{% url 'delete_project' project.id %}">Delete</a></td>
+               <td><a class="btn btn-sm btn-outline-warning" href="{% url 'get_project_issues' project.id %}">Issues</a></td>
 
            </tr>
 

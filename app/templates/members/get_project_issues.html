@@ -1,0 +1,64 @@
+{% extends 'main/main.html' %}
+ {% block content %}
+{% if has_issue %}
+<div class="row">
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-4 mt-4 ml-3" id="create-new-issue">
+			  	<div class="card-header">
+			  		<h5 class="card-title">Create New Issue :)</h5>
+			  	</div>
+			  	<div class="card-body">
+                    <p class="card-text">
+                        Do you have new bug ? or the customer has greate(!) new idea ? to create new issue please <a href="{% url 'update_or_create_issue' None %}">click here</a>
+                    </p>
+			  	</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% for issue in issues %}
+ <div class="row">
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-4 mt-4 ml-3" id="total-orders">
+			  	<div class="card-header">
+			  		<h5 class="card-title">{{issue.name}}</h5>
+			  	</div>
+			  	<div class="card-body">
+                    <p class="card-text">
+                        name= {{issue.name}}<br/>
+                        description= {{issue.description}}<br/>
+                        is_active= {{issue.is_active}}<br/>
+                        opened_by= {{issue.opened_by}}<br/>
+                        assigned_by= {{issue.assigned_by}}<br/>
+                        assigned_to= {{issue.assigned_to}}<br/>
+                        assignment_date= {{issue.assignment_date}}<br/>
+                        created_at= {{issue.created_at}}<br/>
+                        deadline= {{issue.deadline}}<br/>
+                    </p>
+			  	</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="row">
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-4 mt-4 ml-3" id="delete-warn">
+			  	<div class="card-header">
+			  		<h5 class="card-title">No Issue Found !</h5>
+			  	</div>
+			  	<div class="card-body">
+                    <p class="card-text">
+                        No issue assigned to the project yet, to assign please <a href="{% url 'update_or_create_issue' None %}">click here</a>
+                    </p>
+			  	</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endblock %}
